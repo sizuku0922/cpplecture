@@ -1,0 +1,30 @@
+{
+  "configurations": [
+    {
+      "name": "Mac",
+      "compilerPath": "/usr/bin/clang++",
+      "cppStandard": "c++23",
+      "cStandard": "c17",
+      "intelliSenseMode": "${default}",
+      "includePath": [
+        "${workspaceFolder}/src/**"
+      ],
+      "macFrameworkPath": [
+        "/System/Library/Frameworks",
+        "/Library/Frameworks"
+      ]
+    },
+    {
+      "name": "Linux",
+      "compilerPath": "/usr/bin/g++",
+      "cppStandard": "c++23",
+      "cStandard": "c17",
+      "intelliSenseMode": "${default}",
+      "includePath": [
+        "${workspaceFolder}/src/**"
+      ]
+    }
+  ],
+  "version": 4,
+  "enableConfigurationSquiggles": true
+}
