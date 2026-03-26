@@ -1,15 +1,15 @@
 # Auto detect by OS (Mac: clang++, Linux: g++)
 # you can also specify the compiler directly like "CXX := g++"
-CXX					:= Auto
+CXX					?= Auto
 
-BUILD_TYPE			:= Debug
+BUILD_TYPE			?= Debug
 
-PROJECT				:= Unit1
+PROJECT				?= Unit1
 
 TARGET				:= main_$(PROJECT)
 SRCDIR				:= src/$(PROJECT)
 
-BUILDDIR			:= obj
+BUILDDIR			:= obj/$(PROJECT)
 TARGETDIR			:= bin
 OUTPUTDIR			:= output
 
@@ -19,11 +19,12 @@ DEPEXT				:= d
 OBJEXT				:= o
 
 # flags
-CXXFLAGS			:= -MMD -MP -std=c++14
-CXX_DEBUG_FLAGS		:= -Wall -g -O0
+CPPFLAGS			:= -MMD -MP -I./common
+CXXFLAGS			:= -std=c++23
+CXX_DEBUG_FLAGS		:= -Wall -Wextra -Wpedantic -g -O0
 CXX_RELEASE_FLAGS	:= -s -O2
 LDFLAGS				:=
-INCLUDE				:= -I./common
+LDLIBS				:=
 
 #---------------------------------------------------------------------------------
 # DO NOT EDIT BELOW THIS LINE
@@ -40,23 +41,23 @@ ifeq ($(CXX), Auto)
 	endif
 endif
 
-ifeq ($(BUILD_TYPE),Release)
+ifeq ($(BUILD_TYPE), Release)
 	CXXFLAGS += $(CXX_RELEASE_FLAGS)
-else ifeq ($(BUILD_TYPE),Debug)
+else ifeq ($(BUILD_TYPE), Debug)
 	CXXFLAGS += $(CXX_DEBUG_FLAGS)
 else
-	$(error buildtype must be release, debug, profile or coverage)
+	$(error BUILD_TYPE must be Release or Debug)
 endif
 
-sources			:= $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
-objects			:= $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(subst $(SRCEXT),$(OBJEXT),$(sources)))
-dependencies 	:= $(subst .$(OBJEXT),.$(DEPEXT),$(objects))
+sources			:= $(shell find $(SRCDIR) -type f -name "*.$(SRCEXT)")
+objects			:= $(patsubst $(SRCDIR)/%.$(SRCEXT),$(BUILDDIR)/%.$(OBJEXT),$(sources))
+dependencies 	:= $(objects:.$(OBJEXT)=.$(DEPEXT))
 
 # Defauilt Make
 all: directories $(TARGETDIR)/$(TARGET)
 
 run: all
-	@$(TARGETDIR)/$(TARGET)
+	@./$(TARGETDIR)/$(TARGET)
 
 # Remake
 remake: cleaner all
@@ -79,13 +80,13 @@ cleaner: clean
 
 # generate binary by linking objects
 $(TARGETDIR)/$(TARGET): $(objects)
-	@$(CXX) $(CXXFLAGS) -o $(TARGETDIR)/$(TARGET) $^ $(LIBS)
+	@$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$(TARGET) $^ $(LDLIBS)
 
 # generate objects by compiling sources
 # save dependencies of source as .d
 $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(dir $@)
-	@$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ -c $<
+	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ -c $<
 
 # Non-File Targets
 .PHONY: all run remake clean cleaner
