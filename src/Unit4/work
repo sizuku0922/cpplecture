@@ -1,0 +1,24 @@
+#include <array>
+#include <iostream>
+
+constexpr int RowSize = 9;
+constexpr int ColSize = 9;
+
+int main() {
+    std::array<std::array<int, ColSize>, RowSize> matrix;
+
+    for (int i = 0; i < RowSize; ++i) {
+        for (int j = 0; j < ColSize; ++j) {
+            matrix[i][j] = (i + 1) * (j + 1);
+        }
+    }
+
+    for (int i = 0; i < RowSize; ++i) {
+        for (int j = 0; j < ColSize; ++j) {
+            std::cout << matrix[i][j] << "\t";
+        }
+        std::cout << "\n";
+    }
+
+    return 0;
+}

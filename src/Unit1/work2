@@ -1,0 +1,22 @@
+#include <iostream>
+
+int main() {
+    double rate;
+    std::cout << "年利（%）を入力してください: ";
+    st::cin >> rate;
+
+    rate = rate / 100.0;
+
+    double money = 1.0; // 元本を1とする
+    int year = 0;
+
+    // 2倍以上になるまで繰り返す
+    while (money < 2.0) {
+        money *= (1.0 + rate);
+        year++;
+    }
+
+    cout << "元本が2倍以上になるのは " << year << " 年後です。" << endl;
+
+    return 0;
+}
